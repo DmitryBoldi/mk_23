@@ -1,7 +1,8 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/timer.h>
-#include <libopencm3/cm3/nvic.h> //заголовок для перерывааний находиться в другой папке 
+#include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/usart.h>  //заголовок для перерывааний находиться в другой папке 
 
 void setup()
 {
@@ -16,17 +17,18 @@ gpio_set_af(GPIOA,GPIO_AF7, GPIO9 | GPIO10);                           // Аль
 // для stm32f303 --- в диапазоне 1 -- 5; 4 и 5 --- UART.
 // для stm32f407 --- в диапазоне 1 -- 6; 4 и 5 --- UART.
 
-rcc_periph_clock_enable(RCC_USART1);                      // Разморозка ПУ
+rcc_periph_clock_enable(RCC_USART2);                      // Разморозка ПУ
 
-usart_set_baudrate(USART1, 115200);                       // Скорость передачи
-usart_set_databits(USART1, 8);                            // Размер посылки
-usart_set_stopbits(USART1, USART_STOPBITS_1);             // Количество стоп-битов
-usart_set_parity(USART1, USART_PARITY_NONE);              // Контроль четности
+usart_set_baudrate(USART2, 19200);                       // Скорость передачи
+usart_set_databits(USART2, 8);                            // Размер посылки
+usart_set_stopbits(USART2, USART_STOPBITS_2);             // Количество стоп-битов
+usart_set_parity(USART2, USART_PARITY_NONE);              // Контроль четности
+
 
 usart_set_mode(USART1, USART_MODE_TX_RX);                 // Режим работы ПУ
-usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);   // Управление процессом передачи сообщений
+usart_set_flow_control(USART2, USART_FLOWCONTROL_NONE);   // Управление процессом передачи сообщений
 
-usart_enable(USART1);                                     // Включение ПУ
+usart_enable(USART2);                                     // Включение ПУ
 
 
 }
@@ -34,17 +36,18 @@ usart_enable(USART1);                                     // Включение 
 void loop()
 {
 
+//uint16_t c= usart_recv_blocking(USART2);
+usart_send_blocking(USART2, 0x55);
+// usart_send_blocking(USART1, 0x55);
+// usart_send_blocking(USART1, 'H');
+// usart_send_blocking(USART1, 'e');
+// usart_send_blocking(USART1, 'l');
+// usart_send_blocking(USART1, 'l');
+// usart_send_blocking(USART1, 'o');
+// usart_send_blocking(USART1, '\n');
+// usart_send_blocking(USART1, '\r');
 
-usart_send_blocking(USART1, 0x55);
-usart_send_blocking(USART1, 'H');
-usart_send_blocking(USART1, 'e');
-usart_send_blocking(USART1, 'l');
-usart_send_blocking(USART1, 'l');
-usart_send_blocking(USART1, 'o');
-usart_send_blocking(USART1, '\n');
-usart_send_blocking(USART1, '\r');
-
-for(volatile uint32_t i=0 ; i<1000; i++); 
+//for(volatile uint32_t i=0 ; i<1000; i++); 
 
 }
 
